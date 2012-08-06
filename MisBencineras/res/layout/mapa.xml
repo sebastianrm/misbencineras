@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+            android:background="@drawable/background_selector"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.53"
+        android:orientation="horizontal" >
+    <TextView
+        android:id="@+id/textViewEmpresa"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:text="TextView"
+        android:textColor="@color/white" android:paddingRight="5pt"/>
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="2pt"
+                android:textColor="@color/white"
+                android:text="@string/precio" />
+
+
+            <TextView
+                android:id="@+id/textViewPrecio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="2pt"
+                android:paddingLeft="8pt"
+                android:textColor="@color/white"
+                android:text="TextView" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/metros" />
+
+
+            <TextView
+                android:id="@+id/textViewMetros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8pt"
+                android:textColor="@color/white"
+                android:text="TextView" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/combustible" />
+
+
+            <TextView
+                android:id="@+id/textViewCombus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8pt"
+                android:textColor="@color/white"
+                android:text="TextView" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/direccion" />
+
+
+            <TextView
+                android:id="@+id/textViewDir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8pt"
+                android:textColor="@color/white"
+                android:text="TextView" />
+
+        </TableRow>
+
+    </TableLayout>
+
+    </LinearLayout>
+
+    <com.google.android.maps.MapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="338dp"
+        android:apiKey="06LOup7UI9QvKpoPhT77MIZVNlQmkVfS_FKfEGg"
+        android:clickable="true" />
+
+    <Button
+        android:id="@+id/BtnVolver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="volver"
+        android:text="@string/volver" />
+
+</LinearLayout>

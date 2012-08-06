@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="volver">volver</string>
+    <string name="app_name">MisBencineras</string>
+    <string name="metros_redonda">Metros a la redonda</string>
+	<string name="buscar">BUSCAR</string>
+    <string name="gas_93">Gasolina 93</string>
+    <string name="gas_95">Gasolina 95</string>
+    <string name="gas_97">Gasolina 97</string>
+    <string name="glp">GLP Vehicular</string>
+    <string name="gnc">GNC</string>
+    <string name="kerosene">Kerosene</string>
+    <string name="diesel">Petroleo Diesel</string>
+    
+    <string name="seleccione_tipo_combustible">Seleccione tipo combustible</string>
+    
+    <string-array name="arreglo_distancias">
+        <item>1000</item>
+        <item>1500</item>
+        <item>2000</item>
+        <item>2500</item>
+        <item>3000</item>
+    </string-array>
+    <string name="combustible">combustible</string>
+    <string name="vacio"/>
+    <string name="precio">Precio</string>
+    <string name="direccion">Direccion</string>
+    <string name="metros">metros</string>
+    
+    
+
+
+
+
+
+
+        
+    
+</resources>
