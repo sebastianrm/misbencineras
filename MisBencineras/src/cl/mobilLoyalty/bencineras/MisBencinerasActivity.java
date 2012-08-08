@@ -18,10 +18,12 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import cl.mobilLoyalty.bencineras.bean.QuienSoy;
 import cl.mobilLoyalty.bencineras.logic.AppLogic;
 
 public class MisBencinerasActivity extends Activity {
 
+	private QuienSoy props;
 	private AppLogic selleciones;
 	Intent locatorService = null;
 	Button searchBtn = null;
@@ -30,32 +32,33 @@ public class MisBencinerasActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		selleciones = new AppLogic();
-		selleciones.setLatitud(0.0);
-		selleciones.setLongitud(0.0);
-
-		setContentView(R.layout.main);
-
-		searchBtn = (Button) findViewById(R.id.button1);
-
-		Serializable selleciones2 = NavigationManager.getSelleciones(this);
-
-		if (selleciones2 instanceof AppLogic) {
-			selleciones = (AppLogic) selleciones2;
-		}
-
-		if (selleciones.getBencineras() == null
-				|| selleciones.getBencineras().isEmpty()) {
-			startService();
-
-			if (!startService()) {
-				// CreateAlert("Error!", "Service Cannot be started");
-			} else {
-				// Toast.makeText(MisBencinerasActivity.this, "Service Started",
-				// Toast.LENGTH_LONG).show();
+		props = NavigationManager.getProperties(this);
+		if (props != null && !props.getKey().equals("")) {
+			selleciones = new AppLogic();
+			selleciones.setLatitud(0.0);
+			selleciones.setLongitud(0.0);
+			setContentView(R.layout.main);
+			searchBtn = (Button) findViewById(R.id.button1);
+			Serializable selleciones2 = NavigationManager.getSelleciones(this);
+			props = NavigationManager.getProperties(this);
+			if (selleciones2 instanceof AppLogic) {
+				selleciones = (AppLogic) selleciones2;
 			}
+			if (selleciones.getBencineras() == null
+					|| selleciones.getBencineras().isEmpty()) {
+				startService();
 
+				if (!startService()) {
+					// CreateAlert("Error!", "Service Cannot be started");
+				} else {
+					// Toast.makeText(MisBencinerasActivity.this,
+					// "Service Started",
+					// Toast.LENGTH_LONG).show();
+				}
+
+			}
+		} else {
+			NavigationManager.navegarAActivityInicio(this);
 		}
 	}
 
@@ -98,7 +101,7 @@ public class MisBencinerasActivity extends Activity {
 
 		selleciones.setBencinaSelecionada(text.toString());
 
-		NavigationManager.navegarActivityLista(this, selleciones);
+		NavigationManager.navegarActivityLista(this, selleciones, props);
 
 	}
 

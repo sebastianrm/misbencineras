@@ -41,6 +41,7 @@ import android.widget.Toast;
 import cl.mobilLoyalty.bencineras.bean.Bencinas;
 import cl.mobilLoyalty.bencineras.bean.GeoReferencia;
 import cl.mobilLoyalty.bencineras.bean.PtoDesdeHasta;
+import cl.mobilLoyalty.bencineras.bean.QuienSoy;
 import cl.mobilLoyalty.bencineras.bean.Region;
 import cl.mobilLoyalty.bencineras.bean.ServiCentro;
 import cl.mobilLoyalty.bencineras.logic.AppLogic;
@@ -51,7 +52,7 @@ import cl.mobilLoyalty.bencineras.logic.CustomComparator;
  * 
  */
 public class ListaActivity extends Activity {
-
+	private QuienSoy props;
 	private AppLogic resultadoBusqueda;
 	private ListView lstOpciones;
 	private PtoDesdeHasta seleccion;
@@ -67,6 +68,10 @@ public class ListaActivity extends Activity {
 
 		Serializable selleciones2 = NavigationManager.getSelleciones(this);
 
+		
+		// asigno el key del usuario
+		props = NavigationManager.getProperties(this);
+		
 		if (selleciones2 instanceof AppLogic) {
 			resultadoBusqueda = (AppLogic) selleciones2;
 		}
@@ -124,7 +129,7 @@ public class ListaActivity extends Activity {
 
 	public void volver(View view) {
 		resultadoBusqueda.setBencineras(null);
-		NavigationManager.navegarAActivityPrincipal(this, resultadoBusqueda);
+		NavigationManager.navegarAActivityPrincipal(this, resultadoBusqueda,props);
 
 	}
 
@@ -201,12 +206,8 @@ public class ListaActivity extends Activity {
 			// "http://10.130.30.39:8080/MisBencinerasServer/cercana/cercana/"
 			// + urls[0] + "/" + urls[1] + "/" + urls[2] + "/" + urls[3];
 			// secretaria
-			String URL = "http://198.41.36.27:8080/MisBencinerasServer/cercana/cercana/"
-					+ urls[0] + "/" + urls[1] + "/" + urls[2] + "/" + urls[3];
-			// mario
-			// String URL =
-			// "http://assi.dyndns.org:8080/MisBencinerasServer/cercana/cercana/"
-			// + urls[0] + "/" + urls[1] + "/" + urls[2] + "/" + urls[3];
+			String URL = "http://10.130.30.34:8080/MisBencinerasServer/cercana/cercana/"
+					+ urls[0] + "/" + urls[1] + "/" + urls[2] + "/" + urls[3]+"/"+props.getKey();
 
 			HttpClient httpclient = new DefaultHttpClient();
 
@@ -264,8 +265,6 @@ public class ListaActivity extends Activity {
 				throws JSONException {
 
 			ArrayList<Bencinas> arrayList = new ArrayList<Bencinas>();
-
-			// JSONObject jsonObject = json.jsonArray("servicios");
 
 			JSONArray jsonServArray = json.getJSONArray("servicios");
 

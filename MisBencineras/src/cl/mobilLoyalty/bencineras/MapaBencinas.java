@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import cl.mobilLoyalty.bencineras.bean.PtoDesdeHasta;
+import cl.mobilLoyalty.bencineras.bean.QuienSoy;
 import cl.mobilLoyalty.bencineras.logic.AppLogic;
 import cl.mobilLoyalty.bencineras.logic.HelloItemizedOverlay;
 
@@ -20,7 +21,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 public class MapaBencinas extends MapActivity {
-
+	private QuienSoy props;
 	private PtoDesdeHasta sellecion;
 	private List<Overlay> mapOverlays;
 	private HelloItemizedOverlay itemizedoverlay;
@@ -60,6 +61,8 @@ public class MapaBencinas extends MapActivity {
 		Serializable sellecionSeriali = NavigationManager.getSellecion(this);
 		Serializable sellec = NavigationManager.getSelleciones(this);
 
+		props = NavigationManager.getProperties(this);
+		
 		if (sellecionSeriali instanceof PtoDesdeHasta) {
 			sellecion = (PtoDesdeHasta) sellecionSeriali;
 		}
@@ -137,7 +140,7 @@ public class MapaBencinas extends MapActivity {
 
 	public void volver(View view) {
 
-		NavigationManager.navegarActivityLista(this, resultadoBusqueda);
+		NavigationManager.navegarActivityLista(this, resultadoBusqueda,props);
 
 	}
 
