@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,12 +19,13 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 import cl.mobilLoyalty.bencineras.bean.QuienSoy;
 import cl.mobilLoyalty.bencineras.logic.AppLogic;
 
 public class MisBencinerasActivity extends Activity {
 
-	private QuienSoy props;
+	private QuienSoy quienSoy;
 	private AppLogic selleciones;
 	Intent locatorService = null;
 	Button searchBtn = null;
@@ -32,15 +34,16 @@ public class MisBencinerasActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		props = NavigationManager.getProperties(this);
-		if (props != null && !props.getKey().equals("")) {
+		quienSoy = NavigationManager.getQuienSoy(this);
+
+		if (quienSoy != null && !quienSoy.getKey().equals("")) {
 			selleciones = new AppLogic();
 			selleciones.setLatitud(0.0);
 			selleciones.setLongitud(0.0);
 			setContentView(R.layout.main);
 			searchBtn = (Button) findViewById(R.id.button1);
 			Serializable selleciones2 = NavigationManager.getSelleciones(this);
-			props = NavigationManager.getProperties(this);
+			quienSoy = NavigationManager.getQuienSoy(this);
 			if (selleciones2 instanceof AppLogic) {
 				selleciones = (AppLogic) selleciones2;
 			}
@@ -49,13 +52,8 @@ public class MisBencinerasActivity extends Activity {
 				startService();
 
 				if (!startService()) {
-					// CreateAlert("Error!", "Service Cannot be started");
-				} else {
-					// Toast.makeText(MisBencinerasActivity.this,
-					// "Service Started",
-					// Toast.LENGTH_LONG).show();
+					 CreateAlert("Error!", "El servicio de Ubicacion no puede ser iniciado");
 				}
-
 			}
 		} else {
 			NavigationManager.navegarAActivityInicio(this);
@@ -81,6 +79,19 @@ public class MisBencinerasActivity extends Activity {
 
 	}
 
+	  public AlertDialog CreateAlert(String title, String message) {
+	        AlertDialog alert = new AlertDialog.Builder(this).create();
+	 
+	        alert.setTitle(title);
+	 
+	        alert.setMessage(message);
+	 
+	        return alert;
+	 
+	    }
+	
+	
+	
 	@SuppressLint("ParserError")
 	public void consultar(View view) {
 
@@ -101,7 +112,7 @@ public class MisBencinerasActivity extends Activity {
 
 		selleciones.setBencinaSelecionada(text.toString());
 
-		NavigationManager.navegarActivityLista(this, selleciones, props);
+		NavigationManager.navegarActivityLista(this, selleciones, quienSoy);
 
 	}
 
@@ -137,7 +148,8 @@ public class MisBencinerasActivity extends Activity {
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
 
-			while (selleciones.getLatitud() == 0.0) {
+			while (selleciones.getLatitud() == 0.0
+					&& selleciones.getLongitud() == 0.0) {
 
 			}
 			return null;
@@ -166,9 +178,10 @@ public class MisBencinerasActivity extends Activity {
 					selleciones.setLongitud(location.getLongitude());
 
 				} catch (Exception e) {
-					// progDailog.dismiss();
-					// Toast.makeText(getApplicationContext(),"Unable to get Location"
-					// , Toast.LENGTH_LONG).show();
+					progDailog.dismiss();
+					Toast.makeText(getApplicationContext(),
+							"No es posible obtener su ubicacion",
+							Toast.LENGTH_LONG).show();
 				}
 
 			}

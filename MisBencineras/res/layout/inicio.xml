@@ -12,7 +12,7 @@
         android:layout_marginTop="77dp"
         android:text="@string/app_name"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
+
     <Button
         android:id="@+id/buttonRegistar"
         android:layout_width="wrap_content"
@@ -23,5 +23,14 @@
         android:layout_marginTop="94dp"
         android:onClick="registrar"
         android:text="@string/registrse" />
+
+    <Button
+        android:id="@+id/buttonInicieSession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/buttonRegistar"
+        android:layout_below="@+id/buttonRegistar"
+        android:layout_marginTop="28dp"
+        android:text="@string/inicieSession" />
 
 </RelativeLayout>

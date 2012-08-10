@@ -35,7 +35,18 @@ public class NavigationManager {
 		activity.startActivity(itemintent);
 		
 	}
-	
+	public static void navegarAActivityLogIn(Activity activity) {
+		activity.finish();
+		Intent itemintent = new Intent(activity, LogIn.class);
+		
+		Bundle b = new Bundle();
+
+		// adjunto el valor seleccionado anteriormente
+		
+		itemintent.putExtra("android.intent.extra.INTENT", b);
+		
+		activity.startActivity(itemintent);
+	}
 	public static void navegarAActivityInicio(Activity activity) {
 		activity.finish();
 		Intent itemintent = new Intent(activity, InicioActivity.class);
@@ -78,7 +89,7 @@ public class NavigationManager {
 	 * @param id2
 	 */
 	public static void navegarActivityMapa(Activity activity,
-			PtoDesdeHasta seleccion,AppLogic resultadoBusqueda) {
+			PtoDesdeHasta seleccion,AppLogic resultadoBusqueda,QuienSoy quienSoy) {
 		activity.finish();
 		Intent itemintent = new Intent(activity, MapaBencinas.class);
 		Bundle b = new Bundle();
@@ -87,7 +98,7 @@ public class NavigationManager {
 
 		b.putSerializable("sellecion", seleccion);
 		b.putSerializable("selleciones", resultadoBusqueda);
-		
+		b.putSerializable("QuienSoy", quienSoy);
 		itemintent.putExtra("android.intent.extra.INTENT", b);
 
 		activity.startActivity(itemintent);
@@ -138,7 +149,7 @@ public class NavigationManager {
 		return serializable;
 	}
 
-	public static QuienSoy getProperties(Activity activity) {
+	public static QuienSoy getQuienSoy(Activity activity) {
 		
 		QuienSoy prop = null;
 		Intent startingIntent = activity.getIntent();

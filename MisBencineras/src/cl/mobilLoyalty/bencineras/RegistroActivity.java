@@ -1,12 +1,9 @@
 package cl.mobilLoyalty.bencineras;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Properties;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,55 +15,73 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import cl.mobilLoyalty.bencineras.bean.QuienSoy;
+import cl.mobilLoyalty.bencineras.logic.Filemanager;
 
 public class RegistroActivity extends Activity {
 	private QuienSoy quienSoy;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		quienSoy = NavigationManager.getProperties(this);
+		quienSoy = NavigationManager.getQuienSoy(this);
 		setContentView(R.layout.registro);
 	}
-	
-	
+
 	@SuppressLint("ParserError")
 	public void enviar(View view) {
-		
+
 		CallWs callWs = new CallWs();
 		String[] consult;
+
+		EditText mailtxt = (EditText) findViewById(R.id.editTextMail);
+		EditText passtxt = (EditText) findViewById(R.id.editTextPass);
 		
-		EditText mailtxt = (EditText)findViewById(R.id.editTextMail);
-		EditText passtxt = (EditText)findViewById(R.id.editTextPass);
-		CheckBox check = (CheckBox)findViewById(R.id.checkBoxConcenti);
+		EditText reMailtxt = (EditText) findViewById(R.id.EditTextConfirmeMail);
+		EditText rePasstxt = (EditText) findViewById(R.id.EditTextConfirmePass);
 		
-		String checked = "";
 		
-		if (check.isChecked()) {
-			checked = "true";
+		
+		if (!mailtxt.getText().toString().equals(reMailtxt.getText().toString())) {
+			Toast.makeText(RegistroActivity.this,
+					"los correos electronicos no coinciden", Toast.LENGTH_LONG)
+					.show();
+		}else if (!passtxt.getText().toString().equals(rePasstxt.getText().toString())) {
+			Toast.makeText(RegistroActivity.this,
+					"la contraseña no coincide", Toast.LENGTH_LONG)
+					.show();
 		}else{
-			checked = "false";
+			
+			CheckBox check = (CheckBox) findViewById(R.id.checkBoxConcenti);
+			
+			String checked = "";
+			
+			if (check.isChecked()) {
+				checked = "true";
+			} else {
+				checked = "false";
+			}
+			consult = new String[3];
+			consult[0] = mailtxt.getText().toString();
+			consult[1] = passtxt.getText().toString();
+			consult[2] = checked;
+			callWs.execute(consult);
+			
 		}
-		consult = new String[3];
-		consult[0] = mailtxt.getText().toString();
-		consult[1] = passtxt.getText().toString();;
-		consult[2] = checked;
-		callWs.execute(consult);
-		
+			
+
 	}
+
 	/**
 	 * 
 	 * @author Administrador
-	 *
+	 * 
 	 */
 	public class CallWs extends AsyncTask<String, Float, String> {
 
@@ -85,8 +100,14 @@ public class RegistroActivity extends Activity {
 
 			// /registrar/{mail}/{password}/{confirmaEnvioMails}/{nombreApp}/{AmbienteApp}
 			// secretaria
-			String URL = "http://10.130.30.34:8080/fidelizacion/registrar/registrar/"
-					+ urls[0] + "/" + urls[1] + "/" + urls[2] + "/" + quienSoy.getNombre_app()+"/" + quienSoy.getAmbiente();
+			String URL = "http://10.130.30.39:8080/fidelizacion/registrar/registrar/"
+					+ urls[0]
+					+ "/"
+					+ urls[1]
+					+ "/"
+					+ urls[2]
+					+ "/"
+					+ quienSoy.getNombre_app() + "/" + quienSoy.getAmbiente();
 
 			HttpClient httpclient = new DefaultHttpClient();
 
@@ -157,18 +178,17 @@ public class RegistroActivity extends Activity {
 		protected void onPostExecute(String resp) {
 
 			progDailog.dismiss();
-			
+
 			if (resp == null || resp.isEmpty()) {
-				
-				 Toast.makeText(RegistroActivity.this,
-				 "no llego nada ",
-				 Toast.LENGTH_LONG).show();
+
+				Toast.makeText(RegistroActivity.this, "SISTEMA TEMPORALMENTE FUERA DELINEA",
+						Toast.LENGTH_LONG).show();
 			} else {
 				/**
 				 * si no es vacio orderno
 				 */
 				quienSoy.setKey(resp.trim());
-				
+
 				actualizaLista();
 			}
 		}
@@ -176,31 +196,16 @@ public class RegistroActivity extends Activity {
 	}
 
 	public void actualizaLista() {
-		
+
 		/**
 		 * guardamos el archivo
 		 * 
 		 */
 
-		Properties props = new Properties();
+		Filemanager.guardar(quienSoy, this);
 
-			// si no existe lo creamos
-		try {
+		NavigationManager.navegarAActivityPrincipal(this, null, quienSoy);
 
-			OutputStreamWriter fout = new OutputStreamWriter(
-					openFileOutput(quienSoy.getNombreArchivo(), Context.MODE_PRIVATE));
-			fout.write("nombre_app="+quienSoy.getNombre_app()+"\nambiente="+quienSoy.getAmbiente()+"android\nkey="+quienSoy.getKey());
-			fout.close();
-
-		} catch (Exception ex) {
-			Log.e("Ficheros", "ERROR AL ESCRIBIR FICHERO A MEMORIA INTERNA");
-		}
-
-		
-		
-		NavigationManager.navegarAActivityPrincipal(this, null,quienSoy);
-		
 	}
-	
-	
+
 }

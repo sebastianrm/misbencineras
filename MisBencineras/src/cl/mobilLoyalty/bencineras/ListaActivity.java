@@ -52,7 +52,7 @@ import cl.mobilLoyalty.bencineras.logic.CustomComparator;
  * 
  */
 public class ListaActivity extends Activity {
-	private QuienSoy props;
+	private QuienSoy quienSoy;
 	private AppLogic resultadoBusqueda;
 	private ListView lstOpciones;
 	private PtoDesdeHasta seleccion;
@@ -68,10 +68,9 @@ public class ListaActivity extends Activity {
 
 		Serializable selleciones2 = NavigationManager.getSelleciones(this);
 
-		
 		// asigno el key del usuario
-		props = NavigationManager.getProperties(this);
-		
+		quienSoy = NavigationManager.getQuienSoy(this);
+
 		if (selleciones2 instanceof AppLogic) {
 			resultadoBusqueda = (AppLogic) selleciones2;
 		}
@@ -129,14 +128,15 @@ public class ListaActivity extends Activity {
 
 	public void volver(View view) {
 		resultadoBusqueda.setBencineras(null);
-		NavigationManager.navegarAActivityPrincipal(this, resultadoBusqueda,props);
+		NavigationManager.navegarAActivityPrincipal(this, resultadoBusqueda,
+				quienSoy);
 
 	}
 
 	public void verMapa() {
 
 		NavigationManager.navegarActivityMapa(this, seleccion,
-				resultadoBusqueda);
+				resultadoBusqueda,quienSoy);
 
 	}
 
@@ -206,8 +206,15 @@ public class ListaActivity extends Activity {
 			// "http://10.130.30.39:8080/MisBencinerasServer/cercana/cercana/"
 			// + urls[0] + "/" + urls[1] + "/" + urls[2] + "/" + urls[3];
 			// secretaria
-			String URL = "http://10.130.30.34:8080/MisBencinerasServer/cercana/cercana/"
-					+ urls[0] + "/" + urls[1] + "/" + urls[2] + "/" + urls[3]+"/"+props.getKey();
+			String URL = "http://10.130.30.39:8080/MisBencinerasServer/cercana/cercana/"
+					+ urls[0]
+					+ "/"
+					+ urls[1]
+					+ "/"
+					+ urls[2]
+					+ "/"
+					+ urls[3]
+					+ "/" + quienSoy.getKey();
 
 			HttpClient httpclient = new DefaultHttpClient();
 
@@ -343,15 +350,13 @@ public class ListaActivity extends Activity {
 		protected void onPostExecute(ArrayList<Bencinas> resp) {
 
 			progDailog.dismiss();
-			
-			 
 
-			
 			if (resp == null || resp.isEmpty()) {
 				resultadoBusqueda.setBencineras(resp);
-				 Toast.makeText(ListaActivity.this,
-				 "no se han encontrado Bencineras cercanas, intente a una mayor distancia.!",
-				 Toast.LENGTH_LONG).show();
+				Toast.makeText(
+						ListaActivity.this,
+						"no se han encontrado Bencineras cercanas, intente a una mayor distancia.!",
+						Toast.LENGTH_LONG).show();
 			} else {
 				/**
 				 * si no es bacio orderno

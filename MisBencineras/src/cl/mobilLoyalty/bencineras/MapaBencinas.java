@@ -21,7 +21,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 public class MapaBencinas extends MapActivity {
-	private QuienSoy props;
+	private QuienSoy quienSoy;
 	private PtoDesdeHasta sellecion;
 	private List<Overlay> mapOverlays;
 	private HelloItemizedOverlay itemizedoverlay;
@@ -61,7 +61,7 @@ public class MapaBencinas extends MapActivity {
 		Serializable sellecionSeriali = NavigationManager.getSellecion(this);
 		Serializable sellec = NavigationManager.getSelleciones(this);
 
-		props = NavigationManager.getProperties(this);
+		quienSoy = NavigationManager.getQuienSoy(this);
 		
 		if (sellecionSeriali instanceof PtoDesdeHasta) {
 			sellecion = (PtoDesdeHasta) sellecionSeriali;
@@ -140,7 +140,7 @@ public class MapaBencinas extends MapActivity {
 
 	public void volver(View view) {
 
-		NavigationManager.navegarActivityLista(this, resultadoBusqueda,props);
+		NavigationManager.navegarActivityLista(this, resultadoBusqueda,quienSoy);
 
 	}
 

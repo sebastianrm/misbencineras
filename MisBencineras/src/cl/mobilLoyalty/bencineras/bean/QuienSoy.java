@@ -19,7 +19,7 @@ public class QuienSoy implements Serializable {
 	private String nombre_app;
 	private String ambiente;
 	private String key;
-	private static final String nombreArchivo = "conf.dat";
+	private static final String nombreArchivo = "conf.txt";
 
 	public QuienSoy(String nombre_app, String ambiente, String key,
 			String nombreArchivo) {
