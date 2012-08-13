@@ -6,7 +6,6 @@ import java.util.Iterator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-
 import cl.mobilLoyalty.bencineras.bean.Bencinas;
 
 import com.google.android.maps.GeoPoint;
@@ -14,6 +13,8 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
 public class HelloItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+	
+	private Drawable drawableBencinera;
 
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	Context mContext;
@@ -46,6 +47,8 @@ public class HelloItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			OverlayItem overlayitem = new OverlayItem(point, next
 					.getServiCentro().getEmpresa(), next.getDescripcion()
 					+ " Precio: " + next.getPrecios());
+			
+			
 			mOverlays.add(overlayitem);
 		}
 		populate();
@@ -59,6 +62,7 @@ public class HelloItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		OverlayItem overlayitem = new OverlayItem(point, bencina
 				.getServiCentro().getEmpresa(), bencina.getDescripcion()
 				+ " Precio: " + bencina.getPrecios());
+		overlayitem.setMarker(drawableBencinera);
 		mOverlays.add(overlayitem);
 		populate();
 	}
@@ -81,6 +85,14 @@ public class HelloItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		dialog.setMessage(item.getSnippet());
 		dialog.show();
 		return true;
+	}
+
+	public Drawable getDrawableBencinera() {
+		return drawableBencinera;
+	}
+
+	public void setDrawableBencinera(Drawable drawableBencinera) {
+		this.drawableBencinera = drawableBencinera;
 	}
 
 }

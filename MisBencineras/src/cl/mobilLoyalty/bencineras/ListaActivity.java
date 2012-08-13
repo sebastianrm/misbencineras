@@ -46,6 +46,7 @@ import cl.mobilLoyalty.bencineras.bean.Region;
 import cl.mobilLoyalty.bencineras.bean.ServiCentro;
 import cl.mobilLoyalty.bencineras.logic.AppLogic;
 import cl.mobilLoyalty.bencineras.logic.CustomComparator;
+import cl.mobilLoyalty.bencineras.utils.Utiles;
 
 /**
  * @author Administrador
@@ -75,6 +76,7 @@ public class ListaActivity extends Activity {
 			resultadoBusqueda = (AppLogic) selleciones2;
 		}
 
+		// s ies que la lista de vencineras es vacia entonces busco
 		// si tra bencineras o el resultado de la busqueda entonces no debe
 		// realizar la busqueda en el ws
 
@@ -106,8 +108,8 @@ public class ListaActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
-				Bencinas bencinas = resultadoBusqueda.getBencineras().get(
-						position);
+				Bencinas bencinas = resultadoBusqueda.getBencinerasFiltro()
+						.get(position);
 
 				seleccion = new PtoDesdeHasta();
 
@@ -127,7 +129,7 @@ public class ListaActivity extends Activity {
 	}
 
 	public void volver(View view) {
-		resultadoBusqueda.setBencineras(null);
+
 		NavigationManager.navegarAActivityPrincipal(this, resultadoBusqueda,
 				quienSoy);
 
@@ -136,7 +138,7 @@ public class ListaActivity extends Activity {
 	public void verMapa() {
 
 		NavigationManager.navegarActivityMapa(this, seleccion,
-				resultadoBusqueda,quienSoy);
+				resultadoBusqueda, quienSoy);
 
 	}
 
@@ -144,9 +146,18 @@ public class ListaActivity extends Activity {
 		// actualizo los titulos
 
 		AdaptadorPrediccion adaptador = new AdaptadorPrediccion(this,
-				R.layout.listitem_2_item, resultadoBusqueda.getBencineras());
+				R.layout.listitem_2_item,
+				resultadoBusqueda.getBencinerasFiltro());
 
 		lstOpciones.setAdapter(adaptador);
+
+		if (resultadoBusqueda.getBencinerasFiltro().size() == 0) {
+			Toast.makeText(
+					ListaActivity.this,
+					"no se han encontrado Bencineras cercanas, intente a una mayor distancia.!",
+					Toast.LENGTH_LONG).show();
+		}
+
 	}
 
 	public void eleccion(String cadena) {
@@ -179,6 +190,8 @@ public class ListaActivity extends Activity {
 		alertbox.show();
 	}
 
+
+
 	/**
 	 * Tread que recupera resultados desde la respuesta
 	 * 
@@ -206,14 +219,8 @@ public class ListaActivity extends Activity {
 			// "http://10.130.30.39:8080/MisBencinerasServer/cercana/cercana/"
 			// + urls[0] + "/" + urls[1] + "/" + urls[2] + "/" + urls[3];
 			// secretaria
-			String URL = "http://10.130.30.39:8080/MisBencinerasServer/cercana/cercana/"
-					+ urls[0]
-					+ "/"
-					+ urls[1]
-					+ "/"
-					+ urls[2]
-					+ "/"
-					+ urls[3]
+			String URL = Utiles.END_POINT_BENCINAS_CERRCANAS + "cercana/"
+					+ urls[0] + "/" + urls[1] + "/" + urls[2] + "/" + urls[3]
 					+ "/" + quienSoy.getKey();
 
 			HttpClient httpclient = new DefaultHttpClient();
@@ -289,6 +296,8 @@ public class ListaActivity extends Activity {
 				JSONObject jsonObjectSC = row.getJSONObject("serviCentro");
 				serviCentro.setDireccion(jsonObjectSC.getString("direccion"));
 				serviCentro.setEmpresa(jsonObjectSC.getString("empresa"));
+				bencina.setDistancia(Double.valueOf(jsonObjectSC
+						.getString("distancia")));
 
 				GeoReferencia geoReferencia = new GeoReferencia();
 				JSONObject jsonObjectGR = jsonObjectSC.getJSONObject("geoRef");
@@ -302,8 +311,6 @@ public class ListaActivity extends Activity {
 				JSONObject jsonObjectRegion = jsonObjectSC
 						.getJSONObject("region");
 				region.setNombre(jsonObjectRegion.getString("nombre"));
-
-				bencina.setDistancia(Double.valueOf(row.getString("distancia")));
 
 				serviCentro.setRegion(region);
 				serviCentro.setGeoRef(geoReferencia);
@@ -393,30 +400,30 @@ public class ListaActivity extends Activity {
 
 			TextView empresa = (TextView) item1
 					.findViewById(R.id.textViewEmpresa);
-			empresa.setText(resultadoBusqueda.getBencineras().get(position)
-					.getServiCentro().getEmpresa());
+			empresa.setText(resultadoBusqueda.getBencinerasFiltro()
+					.get(position).getServiCentro().getEmpresa());
 
 			TextView precio = (TextView) item1
 					.findViewById(R.id.textViewPrecio);
 			precio.setText(String.valueOf(Math.round(resultadoBusqueda
-					.getBencineras().get(position).getPrecios())));
+					.getBencinerasFiltro().get(position).getPrecios())));
 
 			TextView metros = (TextView) item1
 					.findViewById(R.id.textViewMetros);
 			metros.setText(String.valueOf(Math.round(Math
-					.round(resultadoBusqueda.getBencineras().get(position)
-							.getDistancia()))));
+					.round(resultadoBusqueda.getBencinerasFiltro()
+							.get(position).getDistancia()))));
 
 			TextView ultanaje = (TextView) item1
 					.findViewById(R.id.textViewCombus);
-			ultanaje.setText(resultadoBusqueda.getBencineras().get(position)
-					.getDescripcion());
+			ultanaje.setText(resultadoBusqueda.getBencinerasFiltro()
+					.get(position).getDescripcion());
 
 			TextView direccion = (TextView) item1
 					.findViewById(R.id.textViewDir);
 
-			direccion.setText(resultadoBusqueda.getBencineras().get(position)
-					.getServiCentro().getDireccion());
+			direccion.setText(resultadoBusqueda.getBencinerasFiltro()
+					.get(position).getServiCentro().getDireccion());
 
 			return (item1);
 		}

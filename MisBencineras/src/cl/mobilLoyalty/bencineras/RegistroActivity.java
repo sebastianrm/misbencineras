@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import cl.mobilLoyalty.bencineras.bean.QuienSoy;
 import cl.mobilLoyalty.bencineras.logic.Filemanager;
+import cl.mobilLoyalty.bencineras.utils.Utiles;
 
 public class RegistroActivity extends Activity {
 	private QuienSoy quienSoy;
@@ -100,7 +101,7 @@ public class RegistroActivity extends Activity {
 
 			// /registrar/{mail}/{password}/{confirmaEnvioMails}/{nombreApp}/{AmbienteApp}
 			// secretaria
-			String URL = "http://10.130.30.39:8080/fidelizacion/registrar/registrar/"
+			String URL = Utiles.END_POINT_FIDELIZACION+"registrar/"
 					+ urls[0]
 					+ "/"
 					+ urls[1]

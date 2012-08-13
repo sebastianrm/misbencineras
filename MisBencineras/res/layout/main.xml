@@ -16,13 +16,26 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="@string/metros_redonda" android:paddingLeft="5dp"/>
-
+
         <Spinner
-            android:id="@+id/spinner1"
+            android:id="@+id/spinnerMetros"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:entries="@array/arreglo_distancias"
-            android:prompt="@string/metros_redonda" android:paddingLeft="5dp"/>
+            android:paddingLeft="5dp"
+            android:prompt="@string/metros_redonda" android:paddingTop="10dp"/>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/servicentro" android:paddingTop="20dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerServicentros"
+            android:layout_width="186dp"
+            android:layout_height="wrap_content" android:paddingTop="10dp"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -38,56 +51,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="@string/seleccione_tipo_combustible" android:paddingLeft="5dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerCombustible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:entries="@array/arreglo_combustibles"
+            android:paddingTop="10dp"/>
 
-        <RadioGroup
-            android:id="@+id/radioGroup1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp" android:paddingLeft="5dp">
-
-            <RadioButton
-                android:id="@+id/radio0"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/gas_93" />
-
-            <RadioButton
-                android:id="@+id/radio1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gas_95" />
-
-            <RadioButton
-                android:id="@+id/radio2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gas_97" />
-
-            <RadioButton
-                android:id="@+id/radio3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/glp" />
-
-            <RadioButton
-                android:id="@+id/radio4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gnc" />
-
-            <RadioButton
-                android:id="@+id/radio5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/kerosene" />
-
-            <RadioButton
-                android:id="@+id/radio6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/diesel" />
-        </RadioGroup>
     </LinearLayout>
 
     <Button

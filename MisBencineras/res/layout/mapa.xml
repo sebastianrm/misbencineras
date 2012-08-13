@@ -14,9 +14,9 @@
         android:id="@+id/textViewEmpresa"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:gravity="center_vertical"
+        android:gravity="left|center_vertical"
         android:text="TextView"
-        android:textColor="@color/white" android:paddingRight="5pt"/>
+        android:textColor="@color/white" android:paddingRight="5pt" android:maxLines="3" android:lines="2"/>
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -42,7 +42,7 @@
                 android:paddingBottom="2pt"
                 android:paddingLeft="8pt"
                 android:textColor="@color/white"
-                android:text="TextView" />
+                android:text="TextView" android:gravity="top|left"/>
 
         </TableRow>
 
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="8pt"
                 android:textColor="@color/white"
-                android:text="TextView" />
+                android:text="TextView" android:gravity="top|left"/>
 
         </TableRow>
 
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="8pt"
                 android:textColor="@color/white"
-                android:text="TextView" />
+                android:text="TextView" android:gravity="top|left"/>
 
         </TableRow>
 
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="8pt"
                 android:textColor="@color/white"
-                android:text="TextView" />
+                android:text="TextView" android:lines="3" android:maxLines="4" android:gravity="top|left"/>
 
         </TableRow>
 

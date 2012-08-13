@@ -1,6 +1,23 @@
 package cl.mobilLoyalty.bencineras;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,45 +32,60 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
+import cl.mobilLoyalty.bencineras.bean.Bencinas;
+import cl.mobilLoyalty.bencineras.bean.GeoReferencia;
 import cl.mobilLoyalty.bencineras.bean.QuienSoy;
+import cl.mobilLoyalty.bencineras.bean.Region;
+import cl.mobilLoyalty.bencineras.bean.ServiCentro;
 import cl.mobilLoyalty.bencineras.logic.AppLogic;
+import cl.mobilLoyalty.bencineras.logic.CustomComparator;
+import cl.mobilLoyalty.bencineras.utils.Utiles;
 
 public class MisBencinerasActivity extends Activity {
 
 	private QuienSoy quienSoy;
-	private AppLogic selleciones;
+	private AppLogic resultadoBusqueda;
 	Intent locatorService = null;
 	Button searchBtn = null;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		quienSoy = NavigationManager.getQuienSoy(this);
+		Serializable selleciones2 = NavigationManager.getSelleciones(this);
+
+		if (selleciones2 != null && selleciones2 instanceof AppLogic) {
+
+			resultadoBusqueda = (AppLogic) selleciones2;
+
+		} else if (selleciones2 == null) {
+			resultadoBusqueda = new AppLogic();
+			resultadoBusqueda.setLatitud(0.0);
+			resultadoBusqueda.setLongitud(0.0);
+		}
 
 		if (quienSoy != null && !quienSoy.getKey().equals("")) {
-			selleciones = new AppLogic();
-			selleciones.setLatitud(0.0);
-			selleciones.setLongitud(0.0);
 			setContentView(R.layout.main);
 			searchBtn = (Button) findViewById(R.id.button1);
-			Serializable selleciones2 = NavigationManager.getSelleciones(this);
-			quienSoy = NavigationManager.getQuienSoy(this);
-			if (selleciones2 instanceof AppLogic) {
-				selleciones = (AppLogic) selleciones2;
-			}
-			if (selleciones.getBencineras() == null
-					|| selleciones.getBencineras().isEmpty()) {
-				startService();
+
+			if (resultadoBusqueda.getBencineras() == null
+					|| resultadoBusqueda.getBencineras().isEmpty()) {
+				// startService();
 
 				if (!startService()) {
-					 CreateAlert("Error!", "El servicio de Ubicacion no puede ser iniciado");
+					CreateAlert("Error!",
+							"El servicio de Ubicacion no puede ser iniciado");
 				}
+			} else {
+
+				pintarSpinner();
+
 			}
 		} else {
 			NavigationManager.navegarAActivityInicio(this);
@@ -79,43 +111,96 @@ public class MisBencinerasActivity extends Activity {
 
 	}
 
-	  public AlertDialog CreateAlert(String title, String message) {
-	        AlertDialog alert = new AlertDialog.Builder(this).create();
-	 
-	        alert.setTitle(title);
-	 
-	        alert.setMessage(message);
-	 
-	        return alert;
-	 
-	    }
-	
-	
-	
-	@SuppressLint("ParserError")
-	public void consultar(View view) {
+	public AlertDialog CreateAlert(String title, String message) {
+		AlertDialog alert = new AlertDialog.Builder(this).create();
 
-		Spinner sp = (Spinner) findViewById(R.id.spinner1);
+		alert.setTitle(title);
 
-		Double metros = Double.valueOf((String) sp.getSelectedItem());
-		selleciones.setMetros(metros);
+		alert.setMessage(message);
 
-		final RadioGroup rg = (RadioGroup) findViewById(R.id.radioGroup1);
-
-		int idSeleccionado = rg.getCheckedRadioButtonId();
-
-		// final RadioButton radioSexButton;
-
-		// find the radiobutton by returned id
-		CharSequence text = (CharSequence) ((RadioButton) findViewById(idSeleccionado))
-				.getText();
-
-		selleciones.setBencinaSelecionada(text.toString());
-
-		NavigationManager.navegarActivityLista(this, selleciones, quienSoy);
+		return alert;
 
 	}
 
+	@SuppressLint("ParserError")
+	public void consultar(View view) {
+
+		Spinner spMetros = (Spinner) findViewById(R.id.spinnerMetros);
+
+		Double metros = Double.valueOf((String) spMetros.getSelectedItem());
+
+		Spinner spCombustible = (Spinner) findViewById(R.id.spinnerCombustible);
+
+		String combustible = (String) spCombustible.getSelectedItem();
+
+		Spinner spSc = (Spinner) findViewById(R.id.spinnerServicentros);
+
+		String servicento = (String) spSc.getSelectedItem();
+
+		resultadoBusqueda.setMetros(metros);
+		resultadoBusqueda.setBencinaSelecionada(combustible);
+		resultadoBusqueda.setServicentro(servicento);
+
+		RegistraConsultaWs registraConsultaWs = new RegistraConsultaWs();
+
+		registraConsultaWs.execute("");
+		
+		NavigationManager.navegarActivityLista(this, resultadoBusqueda,
+				quienSoy);
+	}
+
+
+	/**
+	 * Tread que registra consulta
+	 * 
+	 * @author Sebastian Retamal
+	 * 
+	 */
+	public class RegistraConsultaWs extends AsyncTask<String, Float, Boolean> {
+
+		protected Boolean doInBackground(String... urls) {
+
+			// pc seba wireless
+			// String URL =
+			// /trx/{latitud}/{longitud}/{ultanaje}/{empresa}/{key}
+			// secretaria
+			String URL = Utiles.END_POINT_BENCINAS_CERRCANAS + "trx/"
+					+ resultadoBusqueda.getLatitud() + "/"
+					+ resultadoBusqueda.getLongitud() + "/"
+					+ resultadoBusqueda.getBencinaSelecionada() + "/"
+					+ resultadoBusqueda.getServicentro() + "/"
+					+ quienSoy.getKey();
+
+			HttpClient httpclient = new DefaultHttpClient();
+
+			URL = URL.replaceAll(" ", "%20");
+
+			// Prepare a request object
+			HttpGet httpget = new HttpGet(URL);
+
+			try {
+				httpclient.execute(httpget);
+
+				return true;
+
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+		}
+
+	}
+
+	/**
+	 * 
+	 * @author Administrador
+	 * 
+	 */
 	public class FetchCordinates extends AsyncTask<String, Integer, String> {
 		ProgressDialog progDailog = null;
 
@@ -139,8 +224,19 @@ public class MisBencinerasActivity extends Activity {
 
 		}
 
+		/**
+		 * 
+		 */
 		protected void onPostExecute(String result) {
 			progDailog.dismiss();
+
+			/**
+			 * YA CON LAS COORDENADAS BUSCAMOS TODAS LAS BENCINERAS CERCANAS
+			 */
+
+			CallWs callWs = new CallWs();
+
+			callWs.execute("");
 
 		}
 
@@ -148,8 +244,8 @@ public class MisBencinerasActivity extends Activity {
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
 
-			while (selleciones.getLatitud() == 0.0
-					&& selleciones.getLongitud() == 0.0) {
+			while (resultadoBusqueda.getLatitud() == 0.0
+					&& resultadoBusqueda.getLongitud() == 0.0) {
 
 			}
 			return null;
@@ -174,8 +270,8 @@ public class MisBencinerasActivity extends Activity {
 					// lati = location.getLatitude();
 					// longi = location.getLongitude();
 
-					selleciones.setLatitud(location.getLatitude());
-					selleciones.setLongitud(location.getLongitude());
+					resultadoBusqueda.setLatitud(location.getLatitude());
+					resultadoBusqueda.setLongitud(location.getLongitude());
 
 				} catch (Exception e) {
 					progDailog.dismiss();
@@ -204,6 +300,210 @@ public class MisBencinerasActivity extends Activity {
 			}
 
 		}
+
+		/**
+		 * Tread que recupera resultados desde la respuesta REALIZA CONSULTA POR
+		 * TODAS LAS BENCINERAS A 7000 METROS
+		 * 
+		 * @author Sebastian Retamal
+		 * 
+		 */
+		public class CallWs extends
+				AsyncTask<String, Float, ArrayList<Bencinas>> {
+
+			ProgressDialog progDailog = null;
+
+			@Override
+			protected void onPreExecute() {
+				progDailog = new ProgressDialog(MisBencinerasActivity.this);
+				progDailog.setMessage("Buscando Bencineras...");
+				progDailog.setIndeterminate(true);
+				progDailog.setCancelable(true);
+				progDailog.show();
+			}
+
+			protected ArrayList<Bencinas> doInBackground(String... urls) {
+
+				// pc seba wireless
+				// String URL =
+				// /cercana/{latitud}/{longitud}/{key}
+				// + urls[0] + "/" + urls[1] + "/" + urls[2] + "/" + urls[3];
+				// secretaria
+				String URL = Utiles.END_POINT_BENCINAS_CERRCANAS + "cercana/"
+						+ resultadoBusqueda.getLatitud() + "/"
+						+ resultadoBusqueda.getLongitud() + "/"
+						+ quienSoy.getKey();
+
+				HttpClient httpclient = new DefaultHttpClient();
+
+				URL = URL.replaceAll(" ", "%20");
+
+				// Prepare a request object
+				HttpGet httpget = new HttpGet(URL);
+
+				// Execute the request
+				HttpResponse response;
+				String result = null;
+				ArrayList<Bencinas> arrayList = null;
+
+				try {
+					response = httpclient.execute(httpget);
+
+					// Get hold of the response entity
+					HttpEntity entity = response.getEntity();
+
+					if (entity != null) {
+
+						// A Simple JSON Response Read
+						InputStream instream = entity.getContent();
+						result = convertStreamToString(instream);
+						// Log.i("prediccion", result);
+
+						// A Simple JSONObject Creation
+						JSONObject json = new JSONObject(result);
+
+						arrayList = parseJSONBencineras(json);
+
+						instream.close();
+					}
+
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return arrayList;
+			}
+
+			/**
+			 * 
+			 * @param json
+			 * @return
+			 * @throws JSONException
+			 */
+			private ArrayList<Bencinas> parseJSONBencineras(JSONObject json)
+					throws JSONException {
+
+				ArrayList<Bencinas> arrayList = new ArrayList<Bencinas>();
+
+				JSONArray jsonServArray = json.getJSONArray("servicios");
+
+				for (int i = 0; i < jsonServArray.length(); i++) {
+					Bencinas bencina = new Bencinas();
+
+					JSONObject row = jsonServArray.getJSONObject(i);
+					bencina.setDescripcion(row.getString("descripcion"));
+					bencina.setPrecios(Float.valueOf(row.getString("precios")));
+
+					bencina.setFechaUlmtimaModificacion(new Timestamp(row
+							.getLong("fechaUlmtimaModificacion")));
+
+					ServiCentro serviCentro = new ServiCentro();
+					JSONObject jsonObjectSC = row.getJSONObject("serviCentro");
+					serviCentro.setDireccion(jsonObjectSC
+							.getString("direccion"));
+					serviCentro.setEmpresa(jsonObjectSC.getString("empresa"));
+
+					bencina.setDistancia(Double.valueOf(jsonObjectSC
+							.getString("distancia")));
+
+					GeoReferencia geoReferencia = new GeoReferencia();
+					JSONObject jsonObjectGR = jsonObjectSC
+							.getJSONObject("geoRef");
+
+					geoReferencia.setLatitud(Float.valueOf(jsonObjectGR
+							.getString("latitud")));
+					geoReferencia.setLongitud(Float.valueOf(jsonObjectGR
+							.getString("longitud")));
+
+					Region region = new Region();
+					JSONObject jsonObjectRegion = jsonObjectSC
+							.getJSONObject("region");
+					region.setNombre(jsonObjectRegion.getString("nombre"));
+
+					serviCentro.setRegion(region);
+					serviCentro.setGeoRef(geoReferencia);
+
+					bencina.setServiCentro(serviCentro);
+
+					arrayList.add(bencina);
+
+				}
+
+				return arrayList;
+
+			}
+
+			/**
+			 * 
+			 * @param is
+			 * @return
+			 */
+			private String convertStreamToString(InputStream is) {
+
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(is));
+				StringBuilder sb = new StringBuilder();
+
+				String line = null;
+				try {
+					while ((line = reader.readLine()) != null) {
+						sb.append(line + "\n");
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						is.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				return sb.toString();
+			}
+
+			@Override
+			protected void onPostExecute(ArrayList<Bencinas> resp) {
+
+				progDailog.dismiss();
+
+				if (resp == null || resp.isEmpty()) {
+					resultadoBusqueda.setBencineras(resp);
+					Toast.makeText(MisBencinerasActivity.this,
+							"no se han encontrado Bencineras cercanas!",
+							Toast.LENGTH_LONG).show();
+
+				} else {
+					/**
+					 * si no es bacio orderno
+					 */
+					Collections.sort(resp, new CustomComparator());
+					resultadoBusqueda.setBencineras(resp);
+				}
+				pintarSpinner();
+			}
+
+		}
+
+	}
+
+	public void pintarSpinner() {
+
+		ArrayAdapter<String> adaptador = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item,
+				resultadoBusqueda.getServicentros());
+
+		final Spinner cmbOpciones = (Spinner) findViewById(R.id.spinnerServicentros);
+
+		adaptador
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		cmbOpciones.setAdapter(adaptador);
 
 	}
 

@@ -46,4 +46,19 @@ public class InicioActivity extends Activity {
 
 		}
 	}
+	
+	@SuppressLint("ParserError")
+	public void logIn(View view) {
+
+		if (quienSoy.getKey() != null && !quienSoy.getKey().equals("")) {
+			// si conmtiene la key entonces salta al incio de forma inmediata
+			NavigationManager.navegarAActivityPrincipal(this, null, quienSoy);
+
+		} else {
+			// si el archivo properties no contiene la key entonces se debe
+			// registrar
+			NavigationManager.navegarAActivityLogIn(this,quienSoy);
+
+		}
+	}
 }

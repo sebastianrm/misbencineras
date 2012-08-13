@@ -35,13 +35,15 @@ public class NavigationManager {
 		activity.startActivity(itemintent);
 		
 	}
-	public static void navegarAActivityLogIn(Activity activity) {
+	public static void navegarAActivityLogIn(Activity activity, QuienSoy props) {
 		activity.finish();
 		Intent itemintent = new Intent(activity, LogIn.class);
 		
 		Bundle b = new Bundle();
 
 		// adjunto el valor seleccionado anteriormente
+
+		b.putSerializable("QuienSoy", props);
 		
 		itemintent.putExtra("android.intent.extra.INTENT", b);
 		
@@ -163,5 +165,4 @@ public class NavigationManager {
 		}
 		return prop;
 	}
-
 }

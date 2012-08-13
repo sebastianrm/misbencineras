@@ -1,17 +1,25 @@
 package cl.mobilLoyalty.bencineras;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import cl.mobilLoyalty.bencineras.bean.PtoDesdeHasta;
 import cl.mobilLoyalty.bencineras.bean.QuienSoy;
 import cl.mobilLoyalty.bencineras.logic.AppLogic;
 import cl.mobilLoyalty.bencineras.logic.HelloItemizedOverlay;
+import cl.mobilLoyalty.bencineras.utils.Utiles;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -28,20 +36,6 @@ public class MapaBencinas extends MapActivity {
 	private MapView mapView;
 	private MapController myMapController;
 	private AppLogic resultadoBusqueda;
-	protected static HashMap<Integer, Integer> distanciasZoom = new HashMap<Integer, Integer>() {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -5503416114647714917L;
-
-		{
-			put(1000, 16);
-			put(1500, 15);
-			put(2000, 14);
-			put(2500, 13);
-			put(3000, 12);
-		}
-	};
 
 	public PtoDesdeHasta getSellecion() {
 		return sellecion;
@@ -62,7 +56,7 @@ public class MapaBencinas extends MapActivity {
 		Serializable sellec = NavigationManager.getSelleciones(this);
 
 		quienSoy = NavigationManager.getQuienSoy(this);
-		
+
 		if (sellecionSeriali instanceof PtoDesdeHasta) {
 			sellecion = (PtoDesdeHasta) sellecionSeriali;
 		}
@@ -105,6 +99,8 @@ public class MapaBencinas extends MapActivity {
 		myMapController = mapView.getController();
 
 		pintaPintadorMapas();
+		RegistraConsultaWs registraConsultaWs = new RegistraConsultaWs();
+		registraConsultaWs.execute("");
 
 	}
 
@@ -113,6 +109,8 @@ public class MapaBencinas extends MapActivity {
 		mapOverlays = mapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.red_dot);
 		itemizedoverlay = new HelloItemizedOverlay(drawable, this);
+		
+		itemizedoverlay.setDrawableBencinera(this.getResources().getDrawable(R.drawable.yellow_dot));
 
 		// ubicacion actual
 		GeoPoint point1 = new GeoPoint((int) (sellecion.getLatDesde() * 1e6),
@@ -122,9 +120,18 @@ public class MapaBencinas extends MapActivity {
 		/**
 		 * zoom
 		 */
-		
-		myMapController.setZoom(distanciasZoom.get(sellecion.getMetros()));
 
+		if (sellecion.getMetros() <= 1500) {
+			myMapController.setZoom(16);
+		} else if (sellecion.getMetros() <= 3000) {
+			myMapController.setZoom(15);
+		} else if (sellecion.getMetros() <= 4500) {
+			myMapController.setZoom(14);
+		} else if (sellecion.getMetros() <= 5500) {
+			myMapController.setZoom(13);
+		} else if (sellecion.getMetros() <= 8000) {
+			myMapController.setZoom(12);
+		}
 		OverlayItem overlayitem1 = new OverlayItem(point1, "",
 				"Ubicacion actual");
 
@@ -140,7 +147,64 @@ public class MapaBencinas extends MapActivity {
 
 	public void volver(View view) {
 
-		NavigationManager.navegarActivityLista(this, resultadoBusqueda,quienSoy);
+		NavigationManager.navegarActivityLista(this, resultadoBusqueda,
+				quienSoy);
+
+	}
+
+	/**
+	 * Tread que registra consulta
+	 * 
+	 * @author Sebastian Retamal
+	 * 
+	 */
+	public class RegistraConsultaWs extends AsyncTask<String, Float, Boolean> {
+
+		protected Boolean doInBackground(String... urls) {
+
+			// pc seba wireless
+			// String URL =
+			// /trx/{latitud}/{longitud}/{ultanaje}/{empresa}/{latempresa}/{longempresa}/{precio}/{distancia}{key}
+			// secretaria
+			String URL = Utiles.END_POINT_BENCINAS_CERRCANAS
+					+ "trx/"
+					+ resultadoBusqueda.getLatitud()
+					+ "/"
+					+ resultadoBusqueda.getLongitud()
+					+ "/"
+					+ resultadoBusqueda.getBencinaSelecionada()
+					+ "/"
+					+ sellecion.getBencinera().getServiCentro().getEmpresa()
+					+ "/"
+					+ sellecion.getBencinera().getServiCentro().getGeoRef()
+							.getLatitud()
+					+ "/"
+					+ sellecion.getBencinera().getServiCentro().getGeoRef()
+							.getLongitud() + "/"
+					+ sellecion.getBencinera().getPrecios() + "/"
+					+ sellecion.getBencinera().getDistancia() + "/"
+					+ quienSoy.getKey();
+
+			HttpClient httpclient = new DefaultHttpClient();
+
+			URL = URL.replaceAll(" ", "%20");
+
+			// Prepare a request object
+			HttpGet httpget = new HttpGet(URL);
+
+			try {
+				httpclient.execute(httpget);
+
+				return true;
+
+			} catch (ClientProtocolException e) {
+				Log.e("Error al registrar", e.getMessage());
+				return false;
+			} catch (IOException e) {
+				Log.e("Error al registrar", e.getMessage());
+				return false;
+			}
+		}
 
 	}
 

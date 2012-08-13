@@ -20,28 +20,72 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-import cl.mobilLoyalty.bencineras.RegistroActivity.CallWs;
 import cl.mobilLoyalty.bencineras.bean.QuienSoy;
 import cl.mobilLoyalty.bencineras.logic.Filemanager;
+import cl.mobilLoyalty.bencineras.utils.Utiles;
 
 /**
- * @author Administrador
- *
+ * @author Sebastian Retamal
+ * 
  */
 public class LogIn extends Activity {
-	
+
 	private QuienSoy quienSoy;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.registro);
+		quienSoy = NavigationManager.getQuienSoy(this);
+		setContentView(R.layout.login);
 	}
+	
+	
+	@SuppressLint("ParserError")
+	public void registrar(View view) {
 
+		if (quienSoy.getKey() != null && !quienSoy.getKey().equals("")) {
+			// si conmtiene la key entonces salta al incio de forma inmediata
+			NavigationManager.navegarAActivityPrincipal(this, null, quienSoy);
+
+		} else {
+			// si el archivo properties no contiene la key entonces se debe
+			// registrar
+			NavigationManager.navegarAActivityRegistar(this, quienSoy);
+
+		}
+	}
+	
+
+	@SuppressLint("ParserError")
+	public void enviar(View view) {
+
+		CallWs callWs = new CallWs();
+		String[] consult;
+
+		EditText mailtxt = (EditText) findViewById(R.id.editTextMail);
+		EditText passtxt = (EditText) findViewById(R.id.editTextPass);
+
+		if (mailtxt.getText().toString().equals("")) {
+			Toast.makeText(LogIn.this,
+					"El correo electronicos no debe ser vacio",
+					Toast.LENGTH_LONG).show();
+		} else if (passtxt.getText().toString().equals("")) {
+			Toast.makeText(LogIn.this, "la contraseña no coincide",
+					Toast.LENGTH_LONG).show();
+		} else {
+
+			consult = new String[2];
+			consult[0] = mailtxt.getText().toString();
+			consult[1] = passtxt.getText().toString();
+			callWs.execute(consult);
+
+		}
+
+	}
 
 	/**
 	 * 
@@ -55,59 +99,23 @@ public class LogIn extends Activity {
 		@Override
 		protected void onPreExecute() {
 			progDailog = new ProgressDialog(LogIn.this);
-			progDailog.setMessage("Registrando...");
+			progDailog.setMessage("Iniciando Session...");
 			progDailog.setIndeterminate(true);
 			progDailog.setCancelable(true);
 			progDailog.show();
 		}
-
-		
-		@SuppressLint("ParserError")
-		public void enviar(View view) {
-
-			CallWs callWs = new CallWs();
-			String[] consult;
-
-			EditText mailtxt = (EditText) findViewById(R.id.editTextMail);
-			EditText passtxt = (EditText) findViewById(R.id.editTextPass);
-			
-			
-			if (!mailtxt.getText().toString().equals("")) {
-				Toast.makeText(LogIn.this,
-						"El correo electronicos no debe ser vacio", Toast.LENGTH_LONG)
-						.show();
-			}else if (!passtxt.getText().toString().equals("")) {
-				Toast.makeText(LogIn.this,
-						"la contraseña no coincide", Toast.LENGTH_LONG)
-						.show();
-			}else{
-				
-				
-				
-				consult = new String[2];
-				consult[0] = mailtxt.getText().toString();
-				consult[1] = passtxt.getText().toString();
-				callWs.execute(consult);
-				
-			}
-				
-
-		}
-		
 		
 		
 		protected String doInBackground(String... urls) {
 
-			// /registrar/{mail}/{password}/{confirmaEnvioMails}/{nombreApp}/{AmbienteApp}
-			// secretaria
-			String URL = "http://10.130.30.39:8080/fidelizacion/registrar/registrar/"
+			// http://localhost:8080/fidelizacion/registrar/iniciosession/mail/password/nombreApp/AmbienteApp
+			String URL = Utiles.END_POINT_FIDELIZACION+"iniciosession/"
 					+ urls[0]
 					+ "/"
 					+ urls[1]
 					+ "/"
-					+ urls[2]
-					+ "/"
-					+ quienSoy.getNombre_app() + "/" + quienSoy.getAmbiente();
+					+ quienSoy.getNombre_app()
+					+ "/" + quienSoy.getAmbiente();
 
 			HttpClient httpclient = new DefaultHttpClient();
 
@@ -131,17 +139,14 @@ public class LogIn extends Activity {
 					// A Simple JSON Response Read
 					InputStream instream = entity.getContent();
 					result = convertStreamToString(instream);
-					// Log.i("prediccion", result);
 
 					instream.close();
 				}
 
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("ERROR AL INICIAR SESSION ", e.getMessage());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("ERROR AL INICIAR SESSION ", e.getMessage());
 			}
 			return result;
 		}
@@ -163,12 +168,12 @@ public class LogIn extends Activity {
 					sb.append(line.trim());
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e("ERROR AL CONVERTIR RESPUESTA EN STRING ", e.getMessage());
 			} finally {
 				try {
 					is.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.e("ERROR AL INICIAR SESSION ", e.getMessage());
 				}
 			}
 			return sb.toString();
@@ -179,9 +184,10 @@ public class LogIn extends Activity {
 
 			progDailog.dismiss();
 
-			if (resp == null || resp.isEmpty()) {
+			if (resp == null ) {
 
-				Toast.makeText(LogIn.this, "SISTEMA TEMPORALMENTE FUERA DELINEA",
+				Toast.makeText(LogIn.this,
+						"SISTEMA TEMPORALMENTE FUERA DELINEA",
 						Toast.LENGTH_LONG).show();
 			} else {
 				/**
@@ -202,12 +208,17 @@ public class LogIn extends Activity {
 		 * 
 		 */
 
-		Filemanager.guardar(quienSoy, this);
-
-		NavigationManager.navegarAActivityPrincipal(this, null, quienSoy);
+		if (quienSoy.getKey().length() >= 6) {
+			Filemanager.guardar(quienSoy, this);
+			NavigationManager.navegarAActivityPrincipal(this, null, quienSoy);
+		} else {
+			EditText passtxt = (EditText) findViewById(R.id.editTextPass);
+			passtxt.setText("");
+			
+			Toast.makeText(LogIn.this, "MAIL O CONTRASEÑA INCORRECTA",
+					Toast.LENGTH_LONG).show();
+		}
 
 	}
-	
-	
-	
+
 }
