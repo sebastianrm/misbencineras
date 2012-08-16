@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="volver">volver</string>
+    <string name="volver">VOLVER</string>
     <string name="app_name">MisBencineras</string>
-    <string name="metros_redonda">Metros a la redonda</string>
+    <string name="metros_redonda">Distancia metros</string>
 	<string name="buscar">BUSCAR</string>
-	<string name="registrse">Registrese</string>
+	<string name="registrse">REGISTRESE</string>
 	
 	
 	
@@ -29,8 +29,6 @@
         <item>7000</item>
     </string-array>
     
-<string name="seleccione_tipo_combustible">Seleccione tipo combustible</string>
-    
     <string-array name="arreglo_combustibles">
         <item>Gasolina 93</item>
         <item>Gasolina 95</item>
@@ -42,11 +40,12 @@
     </string-array>
     
     
-    <string name="combustible">Tipos combustible</string>
+    <string name="tipos_combustible">Tipos combustible</string>
     <string name="vacio"/>
     <string name="precio">Precio</string>
     <string name="direccion">Direccion</string>
-    <string name="metros">metros</string>
+    <string name="metros">Metros</string>
+    <string name="combustible">Combustible</string>
     
     <string name="paraIngresar">Para ingresar por favor completa los siguientes datos</string>
     <string name="mail">E-mail</string>
@@ -56,11 +55,11 @@
     <string name="automobil">Marca automovil</string>
     <string name="modelo">Modelo</string>
     <string name="anio">año</string>
-    <string name="enviar">Enviar</string>
+    <string name="enviar">ENVIAR</string>
 
     <string name="concentimiento">Desea recivir noticias y promociones</string>
 
-    <string name="inicieSession">Inicie session</string>
+    <string name="inicieSession">INICIE SESSION</string>
 
     <string name="servicentro">Servicentro</string>
 

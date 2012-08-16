@@ -91,13 +91,6 @@ public class MapaBencinas extends MapActivity {
 		direccion.setText(sellecion.getBencinera().getServiCentro()
 				.getDireccion());
 
-		/**
-		 * Mapa
-		 */
-		mapView = (MapView) findViewById(R.id.mapview);
-		mapView.setBuiltInZoomControls(true);
-		myMapController = mapView.getController();
-
 		pintaPintadorMapas();
 		RegistraConsultaWs registraConsultaWs = new RegistraConsultaWs();
 		registraConsultaWs.execute("");
@@ -105,18 +98,36 @@ public class MapaBencinas extends MapActivity {
 	}
 
 	private void pintaPintadorMapas() {
+		/**
+		 * Mapa
+		 */
+		mapView = (MapView) findViewById(R.id.mapview);
+		mapView.setBuiltInZoomControls(true);
+		myMapController = mapView.getController();
 
 		mapOverlays = mapView.getOverlays();
-		Drawable drawable = this.getResources().getDrawable(R.drawable.red_dot);
+
+		// ubicacion actual
+
+		Drawable drawable = this.getResources().getDrawable(R.drawable.ic_menu_myplaces);
 		itemizedoverlay = new HelloItemizedOverlay(drawable, this);
-		
-		itemizedoverlay.setDrawableBencinera(this.getResources().getDrawable(R.drawable.yellow_dot));
 
 		// ubicacion actual
 		GeoPoint point1 = new GeoPoint((int) (sellecion.getLatDesde() * 1e6),
 				(int) (sellecion.getLongDesde() * 1e6));
 
 		myMapController.setCenter(point1);
+
+		OverlayItem overlayitem1 = new OverlayItem(point1, "",
+				"Ubicacion actual");
+
+		itemizedoverlay.addOverlay(overlayitem1);
+
+		itemizedoverlay.addAllOverlay(sellecion.getBencinera(), this
+				.getResources().getDrawable(R.drawable.surtidor_red));
+
+		mapOverlays.add(itemizedoverlay);
+
 		/**
 		 * zoom
 		 */
@@ -132,14 +143,6 @@ public class MapaBencinas extends MapActivity {
 		} else if (sellecion.getMetros() <= 8000) {
 			myMapController.setZoom(12);
 		}
-		OverlayItem overlayitem1 = new OverlayItem(point1, "",
-				"Ubicacion actual");
-
-		itemizedoverlay.addOverlay(overlayitem1);
-
-		itemizedoverlay.addAllOverlay(sellecion.getBencinera());
-
-		mapOverlays.add(itemizedoverlay);
 
 		mapView.postInvalidate();
 

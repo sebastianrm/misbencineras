@@ -1,14 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <resources>
 
-  <!--
-  <style name="CustomFastScroll" parent="android:Theme">
-    <item name="android:fastScrollTrackDrawable">@color/lightgrey</item>
-    <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_selector</item>
-  </style>
-  -->
-    <style name="CustomFastScroll" parent="android:Theme">
-    <item name="android:fastScrollTrackDrawable">@color/lightgrey</item>
-    <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_selector</item>
-  </style>
+<style name="ButtomGreyLabelStyle">
+<!-- 	<item name="android:background">#2C8DA2</item> -->
+	<item name="android:textColor">@color/verdeOscuro</item>
+	<item name="android:typeface">serif</item>
+	<item name="android:textSize">25px</item>
+    <item name="android:layout_width">match_parent</item>
+  	<item name="android:layout_height">wrap_content</item>
+  	<item name="android:textStyle">bold</item>
+</style>
+
+<style name="TextoTitulosSpinner">
+	<item name="android:textColor">@color/white</item>
+	<item name="android:typeface">sans</item>
+	<item name="android:textSize">25px</item>
+</style>
+
+<style name="fondoPantallas">
+	<item name="android:background">@color/fondoVerdeAzul</item>
+</style>
+
+<style name="TextoDetalles">
+	<item name="android:typeface">monospace</item>
+	<item name="android:textSize">20px</item>
+	<item name="android:paddingLeft">5pt</item>
+	<item name="android:gravity">top|left</item>
+	<item name="android:textColor">@color/white</item>
+</style>
+    <style name="ListView">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:cacheColorHint">@color/transparent</item>
+        <item name="android:listSelector">@drawable/list_selector</item>
+    </style>
 </resources>

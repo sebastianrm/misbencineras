@@ -79,13 +79,14 @@ public class AppLogic implements Serializable {
 
 		HashSet<String> hashSet = new HashSet<String>();
 
-		Iterator<Bencinas> iterator = bencineras.iterator();
+		if (bencineras != null) {
+			Iterator<Bencinas> iterator = bencineras.iterator();
+			while (iterator.hasNext()) {
+				Bencinas next = iterator.next();
 
-		while (iterator.hasNext()) {
-			Bencinas next = iterator.next();
+				hashSet.add(next.getServiCentro().getEmpresa());
 
-			hashSet.add(next.getServiCentro().getEmpresa());
-
+			}
 		}
 		ArrayList<String> arrayList = new ArrayList<String>();
 		arrayList.add(0, "TODAS");

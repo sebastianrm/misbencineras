@@ -2,21 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-            android:background="@drawable/background_selector"
-    android:orientation="vertical" >
-
+            android:orientation="vertical" style="@style/fondoPantallas">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="0.53"
-        android:orientation="horizontal" >
+        android:orientation="horizontal" android:background="@drawable/list_selector_default">
+
     <TextView
         android:id="@+id/textViewEmpresa"
-        android:layout_width="wrap_content"
+        android:layout_width="91dp"
         android:layout_height="fill_parent"
         android:gravity="left|center_vertical"
-        android:text="TextView"
-        android:textColor="@color/white" android:paddingRight="5pt" android:maxLines="3" android:lines="2"/>
+        android:lines="2"
+        android:maxLines="3"
+        android:paddingRight="1pt"
+        android:text="@string/vacio"
+        android:textColor="@color/white" />
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -40,9 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="2pt"
-                android:paddingLeft="8pt"
-                android:textColor="@color/white"
-                android:text="TextView" android:gravity="top|left"/>
+                style="@style/TextoDetalles"
+                android:text="@string/vacio" />
 
         </TableRow>
 
@@ -63,9 +66,8 @@
                 android:id="@+id/textViewMetros"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8pt"
-                android:textColor="@color/white"
-                android:text="TextView" android:gravity="top|left"/>
+                style="@style/TextoDetalles"
+                android:text="@string/vacio" />
 
         </TableRow>
 
@@ -87,9 +89,8 @@
                 android:id="@+id/textViewCombus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8pt"
-                android:textColor="@color/white"
-                android:text="TextView" android:gravity="top|left"/>
+                style="@style/TextoDetalles"
+                android:text="@string/vacio" />
 
         </TableRow>
 
@@ -104,22 +105,21 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:text="@string/direccion" />
-
-
-            <TextView
+            <TextView
                 android:id="@+id/textViewDir"
-                android:layout_width="wrap_content"
+                android:layout_width="91dp"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8pt"
-                android:textColor="@color/white"
-                android:text="TextView" android:lines="3" android:maxLines="4" android:gravity="top|left"/>
+                android:lines="4"
+                android:maxLines="4"
+                android:text="@string/vacio"
+                style="@style/TextoDetalles" />
 
         </TableRow>
 
     </TableLayout>
 
     </LinearLayout>
-
+
     <com.google.android.maps.MapView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mapview"
@@ -127,12 +127,11 @@
         android:layout_height="338dp"
         android:apiKey="06LOup7UI9QvKpoPhT77MIZVNlQmkVfS_FKfEGg"
         android:clickable="true" />
-
-    <Button
+    <Button
         android:id="@+id/BtnVolver"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+		style="@style/ButtomGreyLabelStyle"
         android:onClick="volver"
-        android:text="@string/volver" />
+        android:text="@string/volver"
+        android:drawableRight="@drawable/ic_menu_revert" />
 
 </LinearLayout>

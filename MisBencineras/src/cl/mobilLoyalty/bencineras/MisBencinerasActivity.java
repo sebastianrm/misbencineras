@@ -144,11 +144,10 @@ public class MisBencinerasActivity extends Activity {
 		RegistraConsultaWs registraConsultaWs = new RegistraConsultaWs();
 
 		registraConsultaWs.execute("");
-		
+
 		NavigationManager.navegarActivityLista(this, resultadoBusqueda,
 				quienSoy);
 	}
-
 
 	/**
 	 * Tread que registra consulta
@@ -311,7 +310,9 @@ public class MisBencinerasActivity extends Activity {
 		public class CallWs extends
 				AsyncTask<String, Float, ArrayList<Bencinas>> {
 
+			
 			ProgressDialog progDailog = null;
+			private boolean error = false;
 
 			@Override
 			protected void onPreExecute() {
@@ -334,19 +335,20 @@ public class MisBencinerasActivity extends Activity {
 						+ resultadoBusqueda.getLongitud() + "/"
 						+ quienSoy.getKey();
 
-				HttpClient httpclient = new DefaultHttpClient();
-
-				URL = URL.replaceAll(" ", "%20");
-
-				// Prepare a request object
-				HttpGet httpget = new HttpGet(URL);
-
 				// Execute the request
 				HttpResponse response;
 				String result = null;
 				ArrayList<Bencinas> arrayList = null;
 
 				try {
+
+					HttpClient httpclient = new DefaultHttpClient();
+
+					URL = URL.replaceAll(" ", "%20");
+
+					// Prepare a request object
+					HttpGet httpget = new HttpGet(URL);
+
 					response = httpclient.execute(httpget);
 
 					// Get hold of the response entity
@@ -368,14 +370,17 @@ public class MisBencinerasActivity extends Activity {
 					}
 
 				} catch (ClientProtocolException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e("ClientProtocolException", e.getMessage());
+					error = true;
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e("IOException", e.getMessage());
+					error = true;
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e("JSONException", e.getMessage());
+					error = true;
+				} catch (RuntimeException e) {
+					Log.e("RuntimeException", e.getMessage());
+					error = true;
 				}
 				return arrayList;
 			}
@@ -461,7 +466,8 @@ public class MisBencinerasActivity extends Activity {
 					try {
 						is.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						Log.e("IOException", e.getMessage());
+						error = true;
 					}
 				}
 				return sb.toString();
@@ -472,18 +478,25 @@ public class MisBencinerasActivity extends Activity {
 
 				progDailog.dismiss();
 
-				if (resp == null || resp.isEmpty()) {
+				if (error == false) {
+					if (resp == null || resp.isEmpty()) {
+						resultadoBusqueda.setBencineras(resp);
+						Toast.makeText(MisBencinerasActivity.this,
+								Utiles.NO_SE_HAN_ENCONTRADO_BENCINERAS_CERCANAS,
+								Toast.LENGTH_LONG).show();
+
+					} else {
+						/**
+						 * si no es bacio orderno
+						 */
+						Collections.sort(resp, new CustomComparator());
+						resultadoBusqueda.setBencineras(resp);
+					}
+				} else {
 					resultadoBusqueda.setBencineras(resp);
 					Toast.makeText(MisBencinerasActivity.this,
-							"no se han encontrado Bencineras cercanas!",
+							Utiles.SISTEMA_TEMPORALMENTE_FUERA_DE_LINEA,
 							Toast.LENGTH_LONG).show();
-
-				} else {
-					/**
-					 * si no es bacio orderno
-					 */
-					Collections.sort(resp, new CustomComparator());
-					resultadoBusqueda.setBencineras(resp);
 				}
 				pintarSpinner();
 			}

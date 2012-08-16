@@ -2,16 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="top" >
+    android:gravity="top" style="@style/fondoPantallas">
 
     <Button
         android:id="@+id/button1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+		style="@style/ButtomGreyLabelStyle"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:onClick="volver"
+        android:drawableRight="@drawable/ic_menu_revert"
         android:text="@string/volver" />
 
     <RelativeLayout
@@ -21,15 +21,15 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/background_selector" >
+        android:background="@color/transparent" >
 
         <ListView
             android:id="@+id/listView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" 
             android:layout_alignParentBottom="true"
-            android:background="@color/transparent"
-            android:cacheColorHint="@color/transparent" android:animateLayoutChanges="true" android:layout_alignParentTop="true">
+            style="@style/ListView"
+            android:animateLayoutChanges="true"
+            >
 
         </ListView>
 

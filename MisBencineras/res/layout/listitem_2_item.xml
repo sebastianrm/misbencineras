@@ -3,16 +3,18 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@color/transparent"
+    android:background="@drawable/list_selector"
     android:padding="8dp">
-
-    <TextView
+    <TextView
         android:id="@+id/textViewEmpresa"
-        android:layout_width="wrap_content"
+        android:layout_width="91dp"
         android:layout_height="fill_parent"
         android:gravity="left|center_vertical"
-        android:text="TextView"
-        android:textColor="@color/white" android:paddingRight="5pt" android:maxLines="2" android:lines="2"/>
+        android:lines="2"
+        android:maxLines="2"
+        android:paddingRight="1pt"
+        android:text="@string/vacio"
+        android:textColor="@color/white" />
 
     <TableLayout
         android:layout_width="match_parent"
@@ -36,9 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="2pt"
-                android:paddingLeft="8pt"
-                android:textColor="@color/white"
-                android:text="TextView" android:gravity="top|left"/>
+                android:text="@string/vacio"
+                style="@style/TextoDetalles"/>
 
         </TableRow>
 
@@ -58,9 +59,8 @@
                 android:id="@+id/textViewMetros"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8pt"
-                android:textColor="@color/white"
-                android:text="TextView" android:gravity="top|left"/>
+                android:text="@string/vacio"
+                style="@style/TextoDetalles"/>
 
         </TableRow>
 
@@ -80,9 +80,8 @@
                 android:id="@+id/textViewCombus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8pt"
-                android:textColor="@color/white"
-                android:text="TextView" android:gravity="top|left"/>
+                android:text="@string/vacio"
+                style="@style/TextoDetalles"/>
 
         </TableRow>
 
@@ -97,17 +96,15 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:text="@string/direccion" />
-
+
             <TextView
                 android:id="@+id/textViewDir"
-                android:layout_width="match_parent"
+                android:layout_width="91dp"
                 android:layout_height="wrap_content"
-                android:gravity="top|left"
-                android:lines="3"
+                android:lines="4"
                 android:maxLines="4"
-                android:paddingLeft="8pt"
-                android:text="TextView"
-                android:textColor="@color/white" />
+                android:text="@string/vacio"
+                style="@style/TextoDetalles"/>
 
         </TableRow>
 

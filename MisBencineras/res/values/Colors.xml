@@ -7,5 +7,12 @@
   <color name="white">#ffffff</color>
 
   <color name="listseparator">#2A3748</color>
+  <color name="fondoVerdeAzul">#4688AB</color>
+  <color name="verdeOscuro">#62C005</color>
+  <color name="naranja">#EA6015</color>
   
+  
+  <color name="listaInicio">#3CACE0</color>
+  <color name="listaCentro">#72C3E8</color>
+  <color name="listaFin">#3CACE0</color>
 </resources>

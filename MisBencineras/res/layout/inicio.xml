@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent" style="@style/fondoPantallas">
 
     <TextView
         android:id="@+id/textView1"
@@ -15,23 +15,23 @@
 
     <Button
         android:id="@+id/buttonRegistar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+		style="@style/ButtomGreyLabelStyle"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView1"
         android:layout_marginLeft="18dp"
         android:layout_marginTop="94dp"
         android:onClick="registrar"
-        android:text="@string/registrse" />
+        android:text="@string/registrse" 
+        android:drawableRight="@drawable/ic_menu_my_calendar" />
 
     <Button
         android:id="@+id/buttonInicieSession"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+		style="@style/ButtomGreyLabelStyle"
         android:layout_alignLeft="@+id/buttonRegistar"
         android:layout_below="@+id/buttonRegistar"
         android:layout_marginTop="28dp"
         android:onClick="logIn"
-        android:text="@string/inicieSession" />
+        android:text="@string/inicieSession" 
+        android:drawableRight="@drawable/ic_menu_agenda"/>
 
 </RelativeLayout>
