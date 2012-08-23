@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -138,11 +139,9 @@ public class RegistroActivity extends Activity {
 				}
 
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("ClientProtocolException", e.getMessage());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("IOException", e.getMessage());
 			}
 			return result;
 		}
@@ -169,7 +168,7 @@ public class RegistroActivity extends Activity {
 				try {
 					is.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.e("IOException", e.getMessage());
 				}
 			}
 			return sb.toString();

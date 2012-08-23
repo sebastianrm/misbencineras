@@ -183,12 +183,10 @@ public class MisBencinerasActivity extends Activity {
 				return true;
 
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("ClientProtocolException", e.getMessage());
 				return false;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("IOException", e.getMessage());
 				return false;
 			}
 		}
