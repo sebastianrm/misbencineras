@@ -119,13 +119,13 @@
     </TableLayout>
 
     </LinearLayout>
-
+<!--key casa  06LOup7UI9Qs3BrnCrbOoCXgWED1Z5C5b0mApjQ --><!--key pega   06LOup7UI9QvKpoPhT77MIZVNlQmkVfS_FKfEGg -->
     <com.google.android.maps.MapView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
         android:layout_height="338dp"
-        android:apiKey="06LOup7UI9QvKpoPhT77MIZVNlQmkVfS_FKfEGg"
+        android:apiKey="06LOup7UI9Qs3BrnCrbOoCXgWED1Z5C5b0mApjQ"
         android:clickable="true" />
     <Button
         android:id="@+id/BtnVolver"
