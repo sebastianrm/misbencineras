@@ -459,7 +459,8 @@ public class MisBencinerasActivity extends Activity {
 						sb.append(line + "\n");
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.e("IOException", e.getMessage());
+					error = true;
 				} finally {
 					try {
 						is.close();

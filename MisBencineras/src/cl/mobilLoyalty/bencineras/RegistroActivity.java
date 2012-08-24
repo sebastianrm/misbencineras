@@ -163,7 +163,7 @@ public class RegistroActivity extends Activity {
 					sb.append(line.trim());
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e("IOException", e.getMessage());
 			} finally {
 				try {
 					is.close();

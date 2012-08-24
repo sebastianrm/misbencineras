@@ -29,6 +29,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,6 +157,11 @@ public class ListaActivity extends Activity {
 					ListaActivity.this,
 					"no se han encontrado Bencineras cercanas, intente a una mayor distancia.!",
 					Toast.LENGTH_LONG).show();
+		}else{
+			Toast.makeText(
+					ListaActivity.this,
+					"Seleccione una para ver en mapa",
+					Toast.LENGTH_LONG).show();
 		}
 
 	}
@@ -257,14 +263,11 @@ public class ListaActivity extends Activity {
 				}
 
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("ClientProtocolException", e.getMessage());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("IOException", e.getMessage());
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("JSONException", e.getMessage());
 			}
 			return arrayList;
 		}
@@ -342,12 +345,12 @@ public class ListaActivity extends Activity {
 					sb.append(line + "\n");
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e("IOException", e.getMessage());
 			} finally {
 				try {
 					is.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.e("IOException", e.getMessage());
 				}
 			}
 			return sb.toString();

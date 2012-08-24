@@ -24,7 +24,6 @@ import cl.mobilLoyalty.bencineras.bean.QuienSoy;
  */
 public class Filemanager {
 
-	private static final int READ_BLOCK_SIZE = 100;
 	private static final String NOMBRE_ARCHIVO = "conf.txt";
 
 	public static boolean isExternalStorageReadOnly() {
@@ -54,6 +53,7 @@ public class Filemanager {
 				outw.close();
 			}
 		} catch (Exception e) {
+			Log.e("Exception", e.getMessage());
 		}
 	}
 
@@ -87,6 +87,7 @@ public class Filemanager {
 			// Se lee el archivo de texto indicado
 			FileInputStream fin = activity.openFileInput(NOMBRE_ARCHIVO);
 		} catch (FileNotFoundException e) {
+			Log.e("FileNotFoundException", e.getMessage());
 			return false;
 		}
 		return true;

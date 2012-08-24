@@ -6,7 +6,6 @@ import java.util.Iterator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import cl.mobilLoyalty.bencineras.R.drawable;
 import cl.mobilLoyalty.bencineras.bean.Bencinas;
 
 import com.google.android.maps.GeoPoint;
